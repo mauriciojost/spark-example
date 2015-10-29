@@ -7,6 +7,6 @@ mkdir -p localhdfs/input
 
 sbt package 
 
-spark-submit  --master local[4] --executor-memory 1G --class $CLASS $JAR localhdfs/input localhdfs/output
+spark-submit --conf spark.default.parallelism=4 --master local[4] --executor-memory 1G --class $CLASS $JAR localhdfs/input localhdfs/output
 
-cat localhdfs/output/*part*
+ls -lah localhdfs/output/
