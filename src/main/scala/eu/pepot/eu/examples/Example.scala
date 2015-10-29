@@ -32,7 +32,7 @@ object Example {
 
     val latests: RDD[String] = groups.flatMap { group =>
 
-      val values = group._2.toList
+      val values = group._2
 
       val first = values.map(value => value(1)).max
 
