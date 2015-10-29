@@ -10,6 +10,10 @@ See `localhost:4040` web interface.
 
 ## Tricks
 
-If having OOM during shuffles then probably it is required to increase the parallelism level.
+- If having OOM during shuffles then probably it is required to increase the parallelism level: 
 
-Try to use primitive types as much as possible.
+```
+--conf spark.default.parallelism=4
+```
+
+- Try to use primitive types as much as possible.
