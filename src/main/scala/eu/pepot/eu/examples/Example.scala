@@ -15,36 +15,40 @@ object Example {
     val outputDirectory = args(1)
 
     val conf = new SparkConf()
-      .setAppName("XPathFinderSpark")
-      .setMaster("local[2]")
+      .set("spark.hadoop.validateOutputSpecs", "false")
+      .setAppName("Example")
 
     implicit val sc = new SparkContext(conf)
 
     val lines: RDD[String] = sc.textFile(inputDirectory)
 
-    val csvs = lines.map { line =>
+    val splitLines = lines.map { line =>
       line.split(",")
     }
 
-    val groups = csvs.groupBy { csv =>
-      csv(0)
+    val groups = splitLines.groupBy { splitLine =>
+      splitLine(0)
     }
 
-    val latest = groups.map { group =>
+    val latests: RDD[String] = groups.flatMap { group =>
+
       val values = group._2.toList
 
       val first = values.map(value => value(1)).max
 
-      values.map { value =>
+      val concats = values.map { value =>
         if (value(1) == first) {
-          value ++ "Y"
+          ("Y" ++ value).mkString(",")
         } else {
-          value ++ "N"
+          ("N" ++ value).mkString(",")
         }
       }
+
+      concats
+
     }
 
-    latest.saveAsTextFile(outputDirectory)
+    latests.saveAsTextFile(outputDirectory)
 
   }
 
