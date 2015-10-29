@@ -19,7 +19,7 @@ done
 echo Step 3
 for i in `seq 1 2`
 do
-  cat gen1.csv >> big.csv
+  cat gen2.csv >> big.csv
 done
 
 rm gen*.csv
