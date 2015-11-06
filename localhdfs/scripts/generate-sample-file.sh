@@ -12,7 +12,7 @@ cd $CURRDIR
 
 rm *.csv
 
-echo "### Generating a file of 24G..."
+echo "### Generating input file..."
 echo "# Step 1"
 for i in `seq 1 40000`
 do
@@ -20,7 +20,7 @@ do
 done
 
 echo "# Step 2"
-for i in `seq 1 250`
+for i in `seq 1 150`
 do
   cat gen1.csv >> gen2.csv
 done
