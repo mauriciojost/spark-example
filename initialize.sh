@@ -16,5 +16,6 @@ echo "### Generating artifacts..."
 sbt package 
 
 echo "### Ready to run (see conf directory first):"
+echo "       export SPARK_CONF_DIR=`pwd`/conf/"
 echo "       spark-submit --class $CLASS $JAR"
 
