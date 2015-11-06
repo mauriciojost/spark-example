@@ -1,4 +1,5 @@
 data/
+/localhdfs/output/
 project/project/
 project/target/
 target/
