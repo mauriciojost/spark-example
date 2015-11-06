@@ -7,50 +7,40 @@ object Example {
 
   def main(args: Array[String]) {
 
-    if (args.length != 2) {
-      sys.error("Expecting inputDirectory outputDirectory")
-    }
+    val inputDirectory = "localhdfs/input"
+    val outputDirectory = "localhdfs/output"
 
-    val inputDirectory = args(0)
-    val outputDirectory = args(1)
-
-    val conf = new SparkConf()
-      .set("spark.hadoop.validateOutputSpecs", "false")
-      .setAppName("Example")
-
-    implicit val sc = new SparkContext(conf)
+    implicit val sc = new SparkContext(new SparkConf())
 
     val lines: RDD[String] = sc.textFile(inputDirectory)
 
-    val splitLines = lines.map { line =>
-      line.split(",")
-    }
+    val csvLines = lines.map(getAsCsv)
 
-    val groups = splitLines.groupBy { splitLine =>
-      splitLine(0)
-    }
+    val csvLinesGrouped = csvLines.groupBy(getKey)
 
-    val latests: RDD[String] = groups.flatMap { group =>
+    val csvLinesFlagged: RDD[String] = csvLinesGrouped.flatMap { case (keyOfGroup, csvLinesWithSameKey) =>
 
-      val values = group._2
+      val newestEventWithinTheGroup = csvLinesWithSameKey.map(getEventNumber).max
 
-      val first = values.map(value => value(1)).max
-
-      val concats = values.map { value =>
-        if (value(1) == first) {
+      val flaggedCsvLine = csvLinesWithSameKey.map { value =>
+        if (getEventNumber(value) == newestEventWithinTheGroup) {
           ("Y" ++ value).mkString(",")
         } else {
           ("N" ++ value).mkString(",")
         }
       }
 
-      concats
+      flaggedCsvLine
 
     }
 
-    latests.saveAsTextFile(outputDirectory)
+    csvLinesFlagged.saveAsTextFile(outputDirectory)
 
   }
+
+  def getAsCsv(lineString : String) = lineString.split(",")
+  def getKey(csv : Array[String]) = csv(0)
+  def getEventNumber(csv : Array[String]) = csv(1)
 
 }
 
