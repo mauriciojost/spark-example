@@ -20,7 +20,7 @@ object Example {
 
     val csvLines = lines.map(getAsCsv)
 
-    val csvLinesFlagged = csvLines.map(csv => (getKey(csv), csv)).reduceByKey(getLatestCsvLine).map { case (key, csvLine) => ("Y" ++ csvLine).mkString(",") }
+    val csvLinesFlagged = csvLines.keyBy(getKey).reduceByKey(getLatestCsvLine).map { case (key, csvLine) => ("Y" ++ csvLine).mkString(",") }
 
     csvLinesFlagged.saveAsTextFile(outputDirectory)
 
