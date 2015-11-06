@@ -22,11 +22,11 @@ object Example {
 
       val newestEventWithinTheGroup = csvLinesWithSameKey.map(getEventNumber).max
 
-      val flaggedCsvLine = csvLinesWithSameKey.map { value =>
-        if (getEventNumber(value) == newestEventWithinTheGroup) {
-          ("Y" ++ value).mkString(",")
+      val flaggedCsvLine = csvLinesWithSameKey.map { csvLine =>
+        if (getEventNumber(csvLine) == newestEventWithinTheGroup) {
+          ("Y" ++ csvLine).mkString(",")
         } else {
-          ("N" ++ value).mkString(",")
+          ("N" ++ csvLine).mkString(",")
         }
       }
 
