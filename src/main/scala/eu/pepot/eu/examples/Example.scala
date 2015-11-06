@@ -7,6 +7,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 // - Use array types that might end up being primitive light-weight JVM types
 // - Avoid conversions as much as possible
 // - Avoid groupBy! Use better reduceByKey (to discard elements as soon as possible, decreases execution time by half!!!)
+// - Think about repartitioning to avoid overhead of data transfer when having too many partitions on distant executors (reduces 1/7 the time)
 object Example {
 
   def main(args: Array[String]) {
@@ -18,7 +19,7 @@ object Example {
 
     val lines: RDD[String] = sc.textFile(inputDirectory)
 
-    val csvLines = lines.map(getAsCsv)
+    val csvLines = lines.repartition(10).map(getAsCsv)
 
     val csvLinesFlagged = csvLines.keyBy(getKey).reduceByKey(getLatestCsvLine).map { case (key, csvLine) => ("Y" ++ csvLine).mkString(",") }
 
