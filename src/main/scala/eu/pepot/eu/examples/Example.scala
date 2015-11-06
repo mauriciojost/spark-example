@@ -21,7 +21,7 @@ object Example {
 
     val csvLines = lines.repartition(10).map(getAsCsv)
 
-    val csvLinesFlagged = csvLines.keyBy(getKey).reduceByKey(getLatestCsvLine).map { case (key, csvLine) => ("Y" ++ csvLine).mkString(",") }
+    val csvLinesFlagged = csvLines.keyBy(getKey).reduceByKey(getLatestCsvLine).values.map(csv => ("Y" ++ csv).mkString(","))
 
     csvLinesFlagged.saveAsTextFile(outputDirectory)
 
