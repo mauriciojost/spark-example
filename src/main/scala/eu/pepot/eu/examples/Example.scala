@@ -3,6 +3,8 @@ package eu.pepot.eu.examples
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
+// LESSONS:
+// - Use array types that might end up being primitive light-weight JVM types
 object Example {
 
   def main(args: Array[String]) {
