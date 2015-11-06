@@ -2,6 +2,7 @@
 
 CLASS=eu.pepot.eu.examples.Example
 JAR=./target/scala-2.10/spark-example_2.10-0.1.jar
+LOG=execution.log
 
 if [ -f localhdfs/input/big.csv ] 
 then
@@ -15,7 +16,11 @@ fi
 echo "### Generating artifacts..."
 sbt package 
 
-echo "### Ready to run (see conf directory first):"
-echo "       export SPARK_CONF_DIR=`pwd`/conf/"
-echo "       spark-submit --class $CLASS $JAR"
+echo "### Running spark..."
+export CURRENT_COMMIT=`git rev-parse HEAD`
+export SPARK_CONF_DIR=`pwd`/conf/
+spark-submit --class $CLASS $JAR &> $LOG
+echo $CURRENT_COMMIT >> $LOG
+
+echo "### Done."
 
