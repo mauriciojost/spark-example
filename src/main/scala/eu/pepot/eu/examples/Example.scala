@@ -5,6 +5,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 // LESSONS:
 // - Use array types that might end up being primitive light-weight JVM types
+// - Avoid conversions as much as possible
 object Example {
 
   def main(args: Array[String]) {
