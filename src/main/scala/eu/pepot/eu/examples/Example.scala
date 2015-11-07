@@ -10,6 +10,16 @@ import org.apache.spark.{SparkConf, SparkContext}
 // - Think about repartitioning to avoid overhead of data transfer when having too many partitions on distant executors (reduces 1/7 the time)
 // - Think better about coalescing with the amount of workers, it can only decrease the amount of partitions with less data transfering than a full shuffle
 //   and speds up processing (decreases execution time to one third of the original one!!!!)
+// - Coalescing (4 threads in local master):
+//    NO  ->  47s
+//     4  ->  26s
+//     8  ->  26s
+//    16  ->  28s
+//    32  ->  31s
+//    64  ->  38s
+//   128  ->  46s
+
+
 object Example {
 
   def main(args: Array[String]) {
@@ -19,7 +29,7 @@ object Example {
 
     implicit val sc = new SparkContext(new SparkConf())
 
-    val lines: RDD[String] = sc.textFile(inputDirectory).coalesce(4)
+    val lines: RDD[String] = sc.textFile(inputDirectory)
 
     val csvLines = lines.map(getAsCsv)
 
