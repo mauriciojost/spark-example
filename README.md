@@ -10,3 +10,14 @@ This is the related [Google Document](https://docs.google.com/document/d/1WabuGF
 
 See `localhost:4040` web interface.
 
+Also execute: 
+
+```
+./sbin/start-history-server.sh
+```
+to launch the history server, then browse: 
+
+```
+http://localhost:18080/
+```
+
