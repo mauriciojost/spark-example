@@ -11,6 +11,8 @@ else
   echo "### Generating input file..."
   mkdir -p localhdfs/input
   ./localhdfs/scripts/generate-sample-file.sh
+  echo "### Generating spark events directory..."
+  mkdir -p /tmp/spark-events
 fi
 
 echo "### Generating artifacts..."
