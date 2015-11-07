@@ -19,7 +19,7 @@ libraryDependencies += "org.specs2" %% "specs2" % "2.4.2" % "test"
 
 libraryDependencies += "joda-time" % "joda-time" % "2.2"
 
-libraryDependencies += "org.apache.spark" %% "spark-core" % "1.3.1" % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-core" % "1.5.1" % "provided"
 
 
 resolvers += Resolver.url("scoverage-bintray", url("https://dl.bintray.com/sksamuel/sbt-plugins/"))(Resolver.ivyStylePatterns)
