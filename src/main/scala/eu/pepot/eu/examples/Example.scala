@@ -22,10 +22,13 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 object Example {
 
+  type CsvLine = Array[String]
+
   def main(args: Array[String]) {
 
     val inputDirectory = "localhdfs/input"
     val outputDirectory = "localhdfs/output"
+
 
     implicit val sc = new SparkContext(new SparkConf())
 
@@ -33,17 +36,44 @@ object Example {
 
     val csvLines = lines.map(getAsCsv)
 
-    val csvLinesFlagged = csvLines.keyBy(getKey).reduceByKey(getLatestCsvLine).values.map(csv => ("Y" ++ csv).mkString(","))
+    // This algorithm keeps only the latest lines
+    //val csvLinesFlagged = csvLines.keyBy(getKey).reduceByKey(getLatestCsvLine).values.map(csv => ("Y" ++ csv).mkString(","))
+    //csvLinesFlagged.saveAsTextFile(outputDirectory)
 
-    csvLinesFlagged.saveAsTextFile(outputDirectory)
+    // This algorithm keeps all the lines
+    val allReducedEventsFlagged = csvLines.map(getKeyAndEventNumber).groupBy(getKey).flatMap { case (key, csvLinesWithSameKey) =>
+      val newestEventWithinTheGroup = csvLinesWithSameKey.map(getEventNumber).max
+      val flaggedCsvLines = csvLinesWithSameKey.map { csvLine =>
+        if (getEventNumber(csvLine) == newestEventWithinTheGroup) {
+          (getKey(csvLine) + "," + getEventNumber(csvLine), "Y")
+        } else {
+          (getKey(csvLine) + "," + getEventNumber(csvLine), "N")
+        }
+      }
+      flaggedCsvLines
+    }.collect().toMap
+
+    val allReducedEventsFlaggedBroadcast = sc.broadcast(allReducedEventsFlagged)
+
+    val allCsvLinesFlagged = csvLines.mapPartitions { csvLines =>
+      val latestMap = allReducedEventsFlaggedBroadcast.value
+      val res: Iterator[CsvLine] = csvLines.map { csvLine =>
+        val key = getKey(csvLine) + "," + getEventNumber(csvLine)
+        val ret: CsvLine = csvLine :+ latestMap(key)
+        ret
+      }
+      res
+    }
+    allCsvLinesFlagged.map(_.mkString(",")).saveAsTextFile(outputDirectory)
+
 
   }
 
-  def getAsCsv(lineString: String) = lineString.split(",")
-  def getKey(csv: Array[String]) = csv(0)
-  def getEventNumber(csv: Array[String]) = csv(1)
-  def getLatestCsvLine(csvLine1: Array[String], csvLine2: Array[String]) = if (getEventNumber(csvLine1) > getEventNumber(csvLine2)) csvLine1 else csvLine2
-
+  def getAsCsv(lineString: String): CsvLine = lineString.split(",")
+  def getKey(csv: Array[String]): String = csv(0)
+  def getEventNumber(csv: CsvLine): String = csv(1)
+  def getLatestCsvLine(csvLine1: CsvLine, csvLine2: CsvLine): CsvLine = if (getEventNumber(csvLine1) > getEventNumber(csvLine2)) csvLine1 else csvLine2
+  def getKeyAndEventNumber(csv: CsvLine): CsvLine = csv.slice(0, 2)
 
 }
 
