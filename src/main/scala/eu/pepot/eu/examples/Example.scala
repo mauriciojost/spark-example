@@ -41,20 +41,21 @@ object Example {
     //csvLinesFlagged.saveAsTextFile(outputDirectory)
 
     // This algorithm keeps all the lines
-    val allReducedEventsFlagged = splitLines.map(getKeyAndEventNumber)
+    val allReducedEventsFlagged = splitLines
+      .map(getKeyAndEventNumber)
       .groupBy(getKey)
       .flatMap { case (key, csvLinesWithSameKey) =>
-        val newestEventWithinTheGroup = csvLinesWithSameKey.map(getEventNumber).max
-        val flaggedCsvLines = csvLinesWithSameKey.map { csvLine =>
-          if (getEventNumber(csvLine) == newestEventWithinTheGroup) {
-            (getKey(csvLine) + "," + getEventNumber(csvLine), "Y")
-          } else {
-            (getKey(csvLine) + "," + getEventNumber(csvLine), "N")
-          }
+      val newestEventWithinTheGroup = csvLinesWithSameKey.map(getEventNumber).max
+      val flaggedCsvLines = csvLinesWithSameKey.map { csvLine =>
+        if (getEventNumber(csvLine) == newestEventWithinTheGroup) {
+          (getKey(csvLine) + "," + getEventNumber(csvLine), "Y")
+        } else {
+          (getKey(csvLine) + "," + getEventNumber(csvLine), "N")
         }
-        flaggedCsvLines
       }
-      .coalesce(2)
+      flaggedCsvLines
+    }
+      .distinct(2)
       .cache()
 
     val allCsvLinesFlagged = splitLines.keyBy(csvLine => getKey(csvLine) + "," + getEventNumber(csvLine)).join(allReducedEventsFlagged).map { case (id, (a, b)) =>
