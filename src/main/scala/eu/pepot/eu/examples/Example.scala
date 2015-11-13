@@ -32,47 +32,47 @@ object Example {
 
     implicit val sc = new SparkContext(new SparkConf())
 
-    val lines: RDD[String] = sc.textFile(inputDirectory)
+    val rawLines: RDD[String] = sc.textFile(inputDirectory)
 
-    val csvLines = lines.map(getAsCsv)
+    val splitLines = rawLines.map(transformLineToCsvLine)
 
     // This algorithm keeps only the latest lines
     //val csvLinesFlagged = csvLines.keyBy(getKey).reduceByKey(getLatestCsvLine).values.map(csv => ("Y" ++ csv).mkString(","))
     //csvLinesFlagged.saveAsTextFile(outputDirectory)
 
     // This algorithm keeps all the lines
-    val allReducedEventsFlagged = csvLines.map(getKeyAndEventNumber).groupBy(getKey).flatMap { case (key, csvLinesWithSameKey) =>
-      val newestEventWithinTheGroup = csvLinesWithSameKey.map(getEventNumber).max
-      val flaggedCsvLines = csvLinesWithSameKey.map { csvLine =>
-        if (getEventNumber(csvLine) == newestEventWithinTheGroup) {
-          (getKey(csvLine) + "," + getEventNumber(csvLine), "Y")
-        } else {
-          (getKey(csvLine) + "," + getEventNumber(csvLine), "N")
+    val allReducedEventsFlagged = splitLines.map(getKeyAndEventNumber)
+      .groupBy(getKey)
+      .flatMap { case (key, csvLinesWithSameKey) =>
+        val newestEventWithinTheGroup = csvLinesWithSameKey.map(getEventNumber).max
+        val flaggedCsvLines = csvLinesWithSameKey.map { csvLine =>
+          if (getEventNumber(csvLine) == newestEventWithinTheGroup) {
+            (getKey(csvLine) + "," + getEventNumber(csvLine), "Y")
+          } else {
+            (getKey(csvLine) + "," + getEventNumber(csvLine), "N")
+          }
         }
+        flaggedCsvLines
       }
-      flaggedCsvLines
-    }.collect().toMap
+      .coalesce(2)
+      .cache()
 
-    val allReducedEventsFlaggedBroadcast = sc.broadcast(allReducedEventsFlagged)
-
-    val allCsvLinesFlagged = csvLines.mapPartitions { csvLines =>
-      val latestMap = allReducedEventsFlaggedBroadcast.value
-      val res: Iterator[CsvLine] = csvLines.map { csvLine =>
-        val key = getKey(csvLine) + "," + getEventNumber(csvLine)
-        val ret: CsvLine = csvLine :+ latestMap(key)
-        ret
-      }
-      res
+    val allCsvLinesFlagged = splitLines.keyBy(csvLine => getKey(csvLine) + "," + getEventNumber(csvLine)).join(allReducedEventsFlagged).map { case (id, (a, b)) =>
+      a :+ b
     }
     allCsvLinesFlagged.map(_.mkString(",")).saveAsTextFile(outputDirectory)
 
 
   }
 
-  def getAsCsv(lineString: String): CsvLine = lineString.split(",")
+  def transformLineToCsvLine(lineString: String): CsvLine = lineString.split(",")
+
   def getKey(csv: Array[String]): String = csv(0)
+
   def getEventNumber(csv: CsvLine): String = csv(1)
+
   def getLatestCsvLine(csvLine1: CsvLine, csvLine2: CsvLine): CsvLine = if (getEventNumber(csvLine1) > getEventNumber(csvLine2)) csvLine1 else csvLine2
+
   def getKeyAndEventNumber(csv: CsvLine): CsvLine = csv.slice(0, 2)
 
 }
