@@ -26,8 +26,8 @@ object Example {
 
   def main(args: Array[String]) {
 
-    val inputDirectory = "localhdfs/input"
-    val outputDirectory = "localhdfs/output"
+    val inputDirectory = "data/input"
+    val outputDirectory = "data/output"
 
 
     implicit val sc = new SparkContext(new SparkConf())
