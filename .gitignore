@@ -1,6 +1,8 @@
 data/
 /localhdfs/input/big.csv
 /localhdfs/output/
+/data/input/
+/data/output/
 project/project/
 project/target/
 target/
