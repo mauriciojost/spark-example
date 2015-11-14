@@ -24,10 +24,13 @@ object Example {
 
   type CsvLine = Array[String]
 
-  case class LightEvent(id: String, version: String)
-  case class Event(id: String, version: String, payload: String)
-  case class FlaggedLightEvent(id: String, version: String, latest: String)
-  case class FlaggedEvent(id: String, version: String, latest: String, payload: String)
+  case class LightEvent(id: Int, version: Int)
+
+  case class Event(id: Int, version: Int, payload: String)
+
+  case class FlaggedLightEvent(id: Int, version: Int, latest: Boolean)
+
+  case class FlaggedEvent(id: Int, version: Int, latest: Boolean, payload: String)
 
   def main(args: Array[String]) {
 
@@ -45,32 +48,38 @@ object Example {
       .groupBy(_.id)
       .flatMap { case (eventId, eventsWithSameId) => flagEvents(eventsWithSameId) }
       .distinct()
+      .collectAsMap()
+
+    val flagsBroadcasted = sc.broadcast(flags)
 
     val allCsvLinesFlagged = events
-      .map(event => (generateEventIdAndVersionHash(LightEvent(event.id, event.version)), event))
-      .join(flags)
-      .map { case (eventIdAndVersion, (event, flag)) => FlaggedEvent(event.id, event.version, flag, event.payload) }
+      .map { event =>
+        val idAndVersionHash = LightEvent(event.id, event.version)
+        val flag = flagsBroadcasted.value(idAndVersionHash)
+        FlaggedEvent(event.id, event.version, flag, event.payload)
+      }
+
     allCsvLinesFlagged.map(flaggedEventToCsv).saveAsTextFile(outputDirectory)
 
 
   }
 
-  def flagEvents(csvLinesWithSameKey: Iterable[LightEvent]): Iterable[(String, String)] = {
-    val newestEventWithinTheGroup = csvLinesWithSameKey.map(_.version).max
-    val flaggedCsvLines = csvLinesWithSameKey.map { csvLine =>
+  def flagEvents(lightEventsWithSameId: Iterable[LightEvent]): Iterable[(LightEvent, Boolean)] = {
+    val newestEventWithinTheGroup = lightEventsWithSameId.map(_.version).max
+    val flagsMap = lightEventsWithSameId.map { csvLine =>
       if (csvLine.version == newestEventWithinTheGroup) {
-        (generateEventIdAndVersionHash(csvLine), "Y")
+        (csvLine, true)
       } else {
-        (generateEventIdAndVersionHash(csvLine), "N")
+        (csvLine, false)
       }
     }
-    flaggedCsvLines
+    flagsMap
   }
 
 
   def transformLineToEvent(lineString: String): Event = {
     lineString.split(",") match {
-      case Array(id, version, payload) => Event(id, version, payload)
+      case Array(id, version, payload) => Event(id.toInt, version.toInt, payload)
     }
   }
 
@@ -79,8 +88,6 @@ object Example {
   def getEventVersion(csv: CsvLine): String = csv(1)
 
   def getLightEvent(event: Event): LightEvent = LightEvent(id = event.id, version = event.version)
-
-  def generateEventIdAndVersionHash(csvLine: LightEvent): String = csvLine.id + "," + csvLine.version
 
   def flaggedEventToCsv(fEvent: FlaggedEvent): String =
     fEvent.id + "," + fEvent.version + "," + fEvent.latest + "," + fEvent.payload
