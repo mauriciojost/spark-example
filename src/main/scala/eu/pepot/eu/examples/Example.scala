@@ -24,13 +24,13 @@ object Example {
 
   type CsvLine = Array[String]
 
-  case class LightEvent(id: Int, version: Int)
+  case class LightEvent(id: Long, version: Int)
 
-  case class Event(id: Int, version: Int, payload: String)
+  case class Event(id: Long, version: Int, payload: String)
 
-  case class FlaggedLightEvent(id: Int, version: Int, latest: Boolean)
+  case class FlaggedLightEvent(id: Long, version: Int, latest: Boolean)
 
-  case class FlaggedEvent(id: Int, version: Int, latest: Boolean, payload: String)
+  case class FlaggedEvent(id: Long, version: Int, latest: Boolean, payload: String)
 
   def main(args: Array[String]) {
 
@@ -52,14 +52,14 @@ object Example {
 
     val flagsBroadcasted = sc.broadcast(flags)
 
-    val allCsvLinesFlagged = events
+    val allEventsFlagged = events
       .map { event =>
         val idAndVersionHash = LightEvent(event.id, event.version)
         val flag = flagsBroadcasted.value(idAndVersionHash)
         FlaggedEvent(event.id, event.version, flag, event.payload)
       }
 
-    allCsvLinesFlagged.map(flaggedEventToCsv).saveAsTextFile(outputDirectory)
+    allEventsFlagged.map(flaggedEventToCsv).saveAsTextFile(outputDirectory)
 
 
   }
@@ -79,7 +79,7 @@ object Example {
 
   def transformLineToEvent(lineString: String): Event = {
     lineString.split(",") match {
-      case Array(id, version, payload) => Event(id.toInt, version.toInt, payload)
+      case Array(id, version, payload) => Event(id.toLong, version.toInt, payload)
     }
   }
 
