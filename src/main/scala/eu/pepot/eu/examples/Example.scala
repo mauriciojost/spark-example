@@ -5,6 +5,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 import Constants._
 import Helper._
 import Flagger._
+import CommonTypes._
 
 object Example {
 

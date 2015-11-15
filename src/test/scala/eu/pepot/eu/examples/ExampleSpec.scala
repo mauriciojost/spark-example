@@ -1,7 +1,7 @@
 package eu.pepot.eu.examples
 
 import com.holdenkarau.spark.testing.{RDDComparisions, SharedSparkContext}
-import eu.pepot.eu.examples.Helper.{Event, FlaggedEvent}
+import eu.pepot.eu.examples.CommonTypes._
 import org.scalatest.FunSuite
 
 class ExampleSpec extends FunSuite with SharedSparkContext {

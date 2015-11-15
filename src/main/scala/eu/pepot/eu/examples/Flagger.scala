@@ -1,8 +1,9 @@
 package eu.pepot.eu.examples
 
-import eu.pepot.eu.examples.Helper._
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
+import Helper._
+import CommonTypes._
 
 object Flagger {
 
