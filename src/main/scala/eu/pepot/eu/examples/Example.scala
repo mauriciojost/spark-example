@@ -42,6 +42,8 @@ object Example {
         FlaggedEvent(event.id, event.version, flag, event.payload)
       }
 
+    println("Result: " + allEventsFlagged.toDebugString)
+
     allEventsFlagged.map(flaggedEventToCsv).saveAsTextFile(outputDirectory)
 
 
