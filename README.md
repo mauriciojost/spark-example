@@ -6,7 +6,12 @@ This is the related [Google Document](https://docs.google.com/document/d/1WabuGF
 
 ## Run
 
-To launch the test run: 
+To launch the batch test run: 
+```
+./batch.bash <from_commit_id>
+```
+
+To launch a single test run: 
 ```
 ./initialize.bash
 ```
