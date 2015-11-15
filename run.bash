@@ -29,15 +29,16 @@ sbt package
 
 echo "### Preparing configuration file..."
 
-export APP_NAME="`git log --format=%B -n 1`"
+export APP_NAME="${1:-UnnamedApp}"
 source $CONF_FILE
 cat $SPARK_DEFAULTS_CONF_FILE.template | envsubst > $SPARK_DEFAULTS_CONF_FILE
 
 
 echo "### Running spark..."
 export SPARK_CONF_DIR=`pwd`/conf/
+set +e
 spark-submit --class $CLASS $JAR &> $LOG
-cat $LOG | grep took > $TOOK_LOG
+set -e
 
 echo "### Done."
 

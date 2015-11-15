@@ -1,10 +1,14 @@
 #!/bin/bash
 
 set -e 
+set -x 
 
 NRO_ATTEMPTS_PER_COMMIT=2
 LIST_OF_COMMITS_FILE="`mktemp`"
 CURRENT_COMMIT="`git rev-parse HEAD`"
+RUN_SCRIPT=`mktemp`
+cat run.bash > $RUN_SCRIPT
+chmod +x $RUN_SCRIPT
 
 FROM_COMMIT="$1"
 TO_COMMIT="$CURRENT_COMMIT"
@@ -40,7 +44,7 @@ do
 
       rm -fr data/output
 
-      ./run.bash
+      $RUN_SCRIPT "$COMMIT-$COMMIT_MESSAGE"
 
       mkdir -p logs/$COMMIT
 
@@ -56,5 +60,5 @@ do
 
 done
 
-rm $LIST_OF_COMMITS_FILE
+rm $LIST_OF_COMMITS_FILE $RUN_SCRIPT
 
