@@ -1,7 +1,8 @@
 #!/bin/bash
 
-NRO_ATTEMPTS_PER_COMMIT=2
+set -e 
 
+NRO_ATTEMPTS_PER_COMMIT=2
 LIST_OF_COMMITS_FILE="`mktemp`"
 CURRENT_COMMIT="`git rev-parse HEAD`"
 

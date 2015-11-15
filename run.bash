@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 export PATH=$PATH:$HOME/opt/spark/bin/
 mkdir -p /tmp/spark-events
 mkdir -p logs
