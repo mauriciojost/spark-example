@@ -10,8 +10,15 @@ CURRENT_COMMIT="`git rev-parse HEAD`"
 CONF_FILE=conf/batch.conf
 DEFAULTS_SPARK_CONF_FILE=conf/defaults-spark.conf
 
-FROM_COMMIT="${1:-ae9c42692896684cee69cd9522b173a542b74898}"
+FROM_COMMIT="$1"
 TO_COMMIT="$CURRENT_COMMIT"
+
+if [ "$FROM_COMMIT" == "" ]
+then
+  echo "FROM_COMMIT parameter needed."
+  exit 1
+fi
+
 
 LIST_OF_COMMITS_FILE="`mktemp`"
 
