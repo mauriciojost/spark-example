@@ -8,6 +8,7 @@ function getmessage(){
 CURRENT_COMMIT="`git rev-parse HEAD`"
 CONF_FILE=conf/batch.conf
 SPARK_DEFAULTS_CONF_FILE=conf/spark-defaults.conf
+NRO_ATTEMPTS_PER_COMMIT=2
 
 FROM_COMMIT="$1"
 TO_COMMIT="$CURRENT_COMMIT"
@@ -23,6 +24,7 @@ LIST_OF_COMMITS_FILE="`mktemp`"
 
 git rev-list "$FROM_COMMIT".."$TO_COMMIT" > "$LIST_OF_COMMITS_FILE"
 
+echo "//// Starting tests..."
 cat $LIST_OF_COMMITS_FILE | while read COMMIT
 do
 
@@ -30,7 +32,7 @@ do
 
   if [[ "$COMMIT_MESSAGE" == *"TESTME"* ]]
   then
-    echo "### Running test on commit \"$COMMIT : $COMMIT_MESSAGE\" as requested ..."
+    echo "/// Running test on commit \"$COMMIT : $COMMIT_MESSAGE\" as requested ..."
 
     git checkout $COMMIT
 
@@ -38,12 +40,17 @@ do
     source $CONF_FILE
     cat $SPARK_DEFAULTS_CONF_FILE.template | envsubst > $SPARK_DEFAULTS_CONF_FILE
 
-    ./initialize.bash
+    for attempt in `seq 1 $NRO_ATTEMPTS_PER_COMMIT`
+    do
+      echo "// Attempt $attempt"
+      ./initialize.bash
+    done
+
   else
-    echo "### Skipping test on commit \"$COMMIT : $COMMIT_MESSAGE\" as requested (TESTME not found)..."
+    echo "/// Skipping test on commit \"$COMMIT : $COMMIT_MESSAGE\" as requested (TESTME not found)..."
   fi
 
-  echo "Done."
+  echo "////Done."
 
 done
 
