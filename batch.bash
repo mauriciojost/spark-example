@@ -1,13 +1,11 @@
 #!/bin/bash
 
-function getmessage(){
-  git log --format=%B -n 1 "$1"
-}
-
-CURRENT_COMMIT="`git rev-parse HEAD`"
-CONF_FILE=conf/batch.conf
 SPARK_DEFAULTS_CONF_FILE=conf/spark-defaults.conf
+CONF_FILE=conf/batch.conf
 NRO_ATTEMPTS_PER_COMMIT=2
+
+LIST_OF_COMMITS_FILE="`mktemp`"
+CURRENT_COMMIT="`git rev-parse HEAD`"
 
 FROM_COMMIT="$1"
 TO_COMMIT="$CURRENT_COMMIT"
@@ -18,8 +16,10 @@ then
   exit 1
 fi
 
+function getmessage(){
+  git log --format=%B -n 1 "$1"
+}
 
-LIST_OF_COMMITS_FILE="`mktemp`"
 
 git rev-list "$FROM_COMMIT".."$TO_COMMIT" > "$LIST_OF_COMMITS_FILE"
 
