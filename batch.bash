@@ -24,6 +24,8 @@ do
   export COMMIT_MESSAGE="`getmessage $COMMIT`"
   echo "### Running test on commit $COMMIT : $COMMIT_MESSAGE"
 
+  git checkout $COMMIT
+
   export APP_NAME="$COMMIT_MESSAGE"
   source $CONF_FILE
   cat $DEFAULTS_SPARK_CONF_FILE.template | envsubst > $DEFAULTS_SPARK_CONF_FILE
