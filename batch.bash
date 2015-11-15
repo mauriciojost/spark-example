@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 function getmessage(){
   git log --format=%B -n 1 "$1"
 }
