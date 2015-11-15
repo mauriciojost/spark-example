@@ -11,7 +11,6 @@ object Flagger {
     val flags = events
       .map(getLightEventFromEvent)
       .groupBy(_.id)
-      .coalesce(2)
       .flatMap { case (eventId, eventsWithSameId) => flagGreaterEventInGroup(eventsWithSameId) }
       .distinct()
       .collectAsMap()
