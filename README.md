@@ -6,28 +6,32 @@ This is the related [Google Document](https://docs.google.com/document/d/1WabuGF
 
 ## Run
 
-To launch the batch test run: 
+First launch the history server: 
+
+```
+cd $SPARK_HOME
+./sbin/start-history-server.sh
+```
+
+Then browse: 
+
+```
+http://localhost:18080/
+```
+
+After that launch the batch test run: 
 ```
 ./batch.bash <from_commit_id>
 ```
+
+### Single test run
 
 To launch a single test run: 
 ```
 ./initialize.bash
 ```
 
-## Debug
-
 See `localhost:4040` web interface.
 
-Also execute: 
 
-```
-./sbin/start-history-server.sh
-```
-to launch the history server, then browse: 
-
-```
-http://localhost:18080/
-```
 
