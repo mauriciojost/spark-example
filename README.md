@@ -29,7 +29,7 @@ The history server can be browsed here:
 http://localhost:18080/
 ```
 
-The history server will not show anything at the beginning. Now you can launch your tests using a range of commit: from a specified commit (through it's GIT commit ID) until now, using only the commits whose message contain the string `TESTME`.  Launch the batch test: 
+The history server will not show anything at the beginning. Now you can launch your tests using a range of commit: from a specified commit (through it's GIT commit ID) until now, using only the commits whose message begins with the string `TESTME`.  Launch the batch test: 
 
 ```
 cd $THIS_APP_HOME

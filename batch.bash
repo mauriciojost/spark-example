@@ -27,7 +27,7 @@ do
 
   export COMMIT_MESSAGE="`getmessage $COMMIT`"
 
-  if [[ "$COMMIT_MESSAGE" == *"TESTME"* ]]
+  if [[ "$COMMIT_MESSAGE" == "TESTME"* ]]
   then
     echo "/// Running test on commit \"$COMMIT : $COMMIT_MESSAGE\" as requested ..."
 
@@ -40,7 +40,7 @@ do
     done
 
   else
-    echo "/// Skipping test on commit \"$COMMIT : $COMMIT_MESSAGE\" as requested (TESTME not found)..."
+    echo "/// Skipping test on commit \"$COMMIT : $COMMIT_MESSAGE\" as requested (does not start with TESTME)..."
   fi
 
   echo "////Done."
