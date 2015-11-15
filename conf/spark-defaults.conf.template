@@ -2,12 +2,12 @@ spark.app.name				${APP_NAME}
 spark.master				local[${NRO_LOCAL_CORES}]
 spark.serializer			${SERIALIZER}
 spark.driver.cores			${DRIVER_CORES}
-spark.driver.maxResultSize	1g
+spark.driver.maxResultSize		1g
 spark.driver.memory			${DRIVER_MEMORY}
-spark.executor.memory		${EXECUTOR_MEMORY}
+spark.executor.memory			${EXECUTOR_MEMORY}
 spark.local.dir				data/tmp
 spark.logConf				false	
 spark.executor.extraJavaOptions		-XX:+PrintGCDetails -XX:+PrintGCTimeStamps
-#spark.default.parallelism		2
+spark.default.parallelism		${DEFAULT_PARALLELISM}
 spark.hadoop.validateOutputSpecs	false
 spark.eventLog.enabled			true
