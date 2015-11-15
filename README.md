@@ -6,6 +6,11 @@ This is the related [Google Document](https://docs.google.com/document/d/1WabuGF
 
 ## Run
 
+To launch the test run: 
+```
+./initialize.bash
+```
+
 ## Debug
 
 See `localhost:4040` web interface.

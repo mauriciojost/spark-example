@@ -13,7 +13,7 @@ then
 else
   echo "### Generating input file..."
   mkdir -p data/input
-  ./data/scripts/generate-sample-file.sh
+  ./data/scripts/generate-sample-file.bash
   echo "### Generating spark events directory..."
   mkdir -p /tmp/spark-events
 fi
