@@ -17,7 +17,7 @@ then
 else
   echo "### Generating input file..."
   mkdir -p data/input
-  ./data/scripts/generate-sample-file.bash
+  ./data/scripts/generate-sample-file.py
   echo "### Generating spark events directory..."
   mkdir -p /tmp/spark-events
 fi
