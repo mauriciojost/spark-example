@@ -36,7 +36,7 @@ do
     for attempt in `seq 1 $NRO_ATTEMPTS_PER_COMMIT`
     do
       echo "// Attempt $attempt"
-      ./initialize.bash
+      ./run.bash
     done
 
   else

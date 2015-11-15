@@ -28,7 +28,7 @@ After that launch the batch test run:
 
 To launch a single test run: 
 ```
-./initialize.bash
+./run.bash
 ```
 
 See `localhost:4040` web interface.
