@@ -8,6 +8,6 @@ spark.executor.memory			${EXECUTOR_MEMORY}
 spark.local.dir				data/tmp
 spark.logConf				false	
 spark.executor.extraJavaOptions		-XX:+PrintGCDetails -XX:+PrintGCTimeStamps
-spark.default.parallelism		${DEFAULT_PARALLELISM}
+#spark.default.parallelism		${DEFAULT_PARALLELISM}
 spark.hadoop.validateOutputSpecs	false
 spark.eventLog.enabled			true
