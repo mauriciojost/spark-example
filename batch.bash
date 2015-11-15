@@ -42,6 +42,10 @@ do
 
       ./run.bash
 
+      mkdir -p logs/$COMMIT
+
+      mv logs/*.log logs/$COMMIT
+
     done
 
   else
