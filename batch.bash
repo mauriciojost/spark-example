@@ -24,7 +24,7 @@ do
 
   if [[ "$COMMIT_MESSAGE" == *"TESTME"* ]]
   then
-    echo "### Running test on commit $COMMIT : $COMMIT_MESSAGE as requested ..."
+    echo "### Running test on commit \"$COMMIT : $COMMIT_MESSAGE\" as requested ..."
 
     git checkout $COMMIT
 
@@ -34,7 +34,7 @@ do
 
     ./initialize.bash
   else
-    echo "### Skipping test on commit $COMMIT : $COMMIT_MESSAGE as requested..."
+    echo "### Skipping test on commit \"$COMMIT : $COMMIT_MESSAGE\" as requested..."
   fi
 
   echo "Done."
