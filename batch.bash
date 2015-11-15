@@ -18,7 +18,7 @@ LIST_OF_COMMITS_FILE="`mktemp`"
 
 git rev-list "$FROM_COMMIT" "$TO_COMMIT" > "$LIST_OF_COMMITS_FILE"
 
-cat $LIST_OF_COMMITS_FILE > while read COMMIT
+cat $LIST_OF_COMMITS_FILE | while read COMMIT
 do
 
   export COMMIT_MESSAGE="`getmessage $COMMIT`"
