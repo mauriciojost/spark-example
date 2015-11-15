@@ -37,7 +37,11 @@ do
     for attempt in `seq 1 $NRO_ATTEMPTS_PER_COMMIT`
     do
       echo "// Attempt $attempt"
+
+      rm -fr data/output
+
       ./run.bash
+
     done
 
   else
