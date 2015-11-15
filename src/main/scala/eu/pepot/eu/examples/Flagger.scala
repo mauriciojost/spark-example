@@ -13,7 +13,6 @@ object Flagger {
       .reduceByKey(getNewerEvent)
       .coalesce(2)
       .flatMap { case (eventId, eventsWithSameId) => flagGreaterEventInGroup(List(eventsWithSameId)) }
-      .distinct()
       .collectAsMap()
 
     val flagsBroadcasted = sc.broadcast(flags)
@@ -37,7 +36,7 @@ object Flagger {
         (csvLine, false)
       }
     }
-    flagsMap
+    flagsMap.toSet // distinct elements only
   }
 
 }
