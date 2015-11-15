@@ -1,2 +1,0 @@
-15/11/15 08:36:05 INFO DAGScheduler: Job 0 finished: collectAsMap at Example.scala:51, took 85.244025 s
-15/11/15 08:38:06 INFO DAGScheduler: Job 1 finished: saveAsTextFile at Example.scala:62, took 107.289822 s
