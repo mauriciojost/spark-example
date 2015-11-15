@@ -2,7 +2,7 @@
 
 This is a Spark getting started project. It mainly aims to help understanding Spark fundamentals and the impact of using different algorithms when coding Spark-based applications.
 
-## The workflow
+## What is this for? 
 
 With this project you will be able to visualize what means using `coalesce(2)` against using `coalesce(4)` in terms of performance. 
 
@@ -12,7 +12,7 @@ The input data used will be automatically generated the first time you launch th
 
 This is the related [Google Document](https://docs.google.com/document/d/1WabuGFxK-q99DzRwHCFCcCJoot6VrFjJtFZ3CVG7j-U/edit) where I log my conclusions from some basic experiments.
 
-## Run
+## How to use it?
 
 To get started you need to first download [Spark](http://spark.apache.org/downloads.html) (v1.4 or older). Then launch its history server: 
 
@@ -36,7 +36,7 @@ cd $THIS_APP_HOME
 ./batch.bash <from_commit_id>
 ```
 
-### Single test run
+## How to run a single test?
 
 To launch a single test run (for debugging purposes): 
 ```
