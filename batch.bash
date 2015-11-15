@@ -8,7 +8,7 @@ function getmessage(){
 
 CURRENT_COMMIT="`git rev-parse HEAD`"
 CONF_FILE=conf/batch.conf
-DEFAULTS_SPARK_CONF_FILE=conf/defaults-spark.conf
+SPARK_DEFAULTS_CONF_FILE=conf/spark-defaults.conf
 
 FROM_COMMIT="$1"
 TO_COMMIT="$CURRENT_COMMIT"
@@ -37,7 +37,7 @@ do
 
     export APP_NAME="$COMMIT_MESSAGE"
     source $CONF_FILE
-    cat $DEFAULTS_SPARK_CONF_FILE.template | envsubst > $DEFAULTS_SPARK_CONF_FILE
+    cat $SPARK_DEFAULTS_CONF_FILE.template | envsubst > $SPARK_DEFAULTS_CONF_FILE
 
     ./initialize.bash
   else
