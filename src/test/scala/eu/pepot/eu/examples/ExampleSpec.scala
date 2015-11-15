@@ -14,9 +14,7 @@ class ExampleSpec extends FunSuite with SharedSparkContext {
       Event(2000, 3, "")
     )
     val expected = List(
-      FlaggedEvent(1999, 0, false, ""),
       FlaggedEvent(1999, 1, true, ""),
-      FlaggedEvent(2000, 2, false, ""),
       FlaggedEvent(2000, 3, true, "")
     )
 

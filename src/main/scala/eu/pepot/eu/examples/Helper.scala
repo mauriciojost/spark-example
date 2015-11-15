@@ -22,5 +22,12 @@ object Helper {
     }
   }
 
+  def getNewerEvent(eventA: LightEvent, eventB: LightEvent): LightEvent = {
+    if (eventA.id > eventB.id)
+      eventA
+    else
+      eventB
+  }
+
 
 }

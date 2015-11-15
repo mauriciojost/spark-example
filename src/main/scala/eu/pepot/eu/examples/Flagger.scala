@@ -7,21 +7,22 @@ import CommonTypes._
 
 object Flagger {
 
-  def flagEventsRDD(events: RDD[Event]) (implicit sc: SparkContext): RDD[FlaggedEvent] = {
+  def flagEventsRDD(events: RDD[Event])(implicit sc: SparkContext): RDD[FlaggedEvent] = {
     val flags = events
-      .map(getLightEventFromEvent)
-      .groupBy(_.id)
-      .flatMap { case (eventId, eventsWithSameId) => flagGreaterEventInGroup(eventsWithSameId) }
+      .map(event => (event.id, getLightEventFromEvent(event)))
+      .reduceByKey(getNewerEvent)
+      .flatMap { case (eventId, eventsWithSameId) => flagGreaterEventInGroup(List(eventsWithSameId)) }
       .distinct()
       .collectAsMap()
 
     val flagsBroadcasted = sc.broadcast(flags)
 
     val allEventsFlagged = events
-      .map { event =>
+      .flatMap { event =>
       val idAndVersionHash = LightEvent(event.id, event.version)
-      val flag = flagsBroadcasted.value(idAndVersionHash)
-      FlaggedEvent(event.id, event.version, flag, event.payload)
+      flagsBroadcasted.value.get(idAndVersionHash).map { f =>
+        FlaggedEvent(event.id, event.version, f, event.payload)
+      }
     }
     allEventsFlagged
   }
