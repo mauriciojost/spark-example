@@ -41,7 +41,7 @@ do
 
     ./initialize.bash
   else
-    echo "### Skipping test on commit \"$COMMIT : $COMMIT_MESSAGE\" as requested..."
+    echo "### Skipping test on commit \"$COMMIT : $COMMIT_MESSAGE\" as requested (TESTME not found)..."
   fi
 
   echo "Done."
