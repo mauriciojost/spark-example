@@ -22,21 +22,27 @@ fi
 
 LIST_OF_COMMITS_FILE="`mktemp`"
 
-git rev-list "$FROM_COMMIT" "$TO_COMMIT" > "$LIST_OF_COMMITS_FILE"
+git rev-list "$FROM_COMMIT".."$TO_COMMIT" > "$LIST_OF_COMMITS_FILE"
 
 cat $LIST_OF_COMMITS_FILE | while read COMMIT
 do
 
   export COMMIT_MESSAGE="`getmessage $COMMIT`"
-  echo "### Running test on commit $COMMIT : $COMMIT_MESSAGE"
 
-  git checkout $COMMIT
+  if [[ "$COMMIT_MESSAGE" == *"TESTME"* ]]
+  then
+    echo "### Running test on commit $COMMIT : $COMMIT_MESSAGE as requested ..."
 
-  export APP_NAME="$COMMIT_MESSAGE"
-  source $CONF_FILE
-  cat $DEFAULTS_SPARK_CONF_FILE.template | envsubst > $DEFAULTS_SPARK_CONF_FILE
+    git checkout $COMMIT
 
-  ./initialize.bash
+    export APP_NAME="$COMMIT_MESSAGE"
+    source $CONF_FILE
+    cat $DEFAULTS_SPARK_CONF_FILE.template | envsubst > $DEFAULTS_SPARK_CONF_FILE
+
+    ./initialize.bash
+  else
+    echo "### Skipping test on commit $COMMIT : $COMMIT_MESSAGE as requested..."
+  fi
 
   echo "Done."
 
