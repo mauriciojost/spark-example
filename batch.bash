@@ -21,7 +21,7 @@ function getmessage(){
 }
 
 
-git rev-list "$FROM_COMMIT".."$TO_COMMIT" > "$LIST_OF_COMMITS_FILE"
+git rev-list --reverse "$FROM_COMMIT".."$TO_COMMIT" > "$LIST_OF_COMMITS_FILE"
 
 echo "//// Starting tests..."
 cat $LIST_OF_COMMITS_FILE | while read COMMIT
