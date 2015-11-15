@@ -24,10 +24,8 @@ echo "### Generating artifacts..."
 sbt package 
 
 echo "### Running spark..."
-export CURRENT_COMMIT=`git rev-parse HEAD`
 export SPARK_CONF_DIR=`pwd`/conf/
 spark-submit --class $CLASS $JAR &> $LOG
-echo $CURRENT_COMMIT >> $LOG
 cat $LOG | grep took > $TOOK_LOG
 
 echo "### Done."
