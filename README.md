@@ -1,13 +1,17 @@
 # README
 
-This is a getting started project.
-It aims to understand Spark fundamentals by executing the application in its different commit versions
-over the same set of data, to later compare performances. No need to generate the data, if it is not 
-present it will be automatically generated the first time.
+This is a Spark getting started project. It mainly aims to help understanding Spark fundamentals and 
+the impact of using different algorithms when coding applications.
+
+With this project you can get an idea of the impact of using different Spark application algorithms and
+configurations. You commit using groupBy, then commit but using reduceBy, then execute `batch.bash` using
+the previous two commits, and then compare the performances using the beautiful Spark UI portal.
+
+Input data will be automatically generated the first time you launch the application.
 
 This is the related 
 [Google Document](https://docs.google.com/document/d/1WabuGFxK-q99DzRwHCFCcCJoot6VrFjJtFZ3CVG7j-U/edit) 
-where I log my conclusions from these basic experiments.
+where I log my conclusions from some basic experiments.
 
 ## Run
 
