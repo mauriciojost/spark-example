@@ -5,7 +5,6 @@ function getmessage(){
   git log --format=%B -n 1 "$1"
 }
 
-
 CURRENT_COMMIT="`git rev-parse HEAD`"
 CONF_FILE=conf/batch.conf
 SPARK_DEFAULTS_CONF_FILE=conf/spark-defaults.conf
