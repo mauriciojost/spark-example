@@ -1,7 +1,5 @@
 #!/bin/bash
 
-SPARK_DEFAULTS_CONF_FILE=conf/spark-defaults.conf
-CONF_FILE=conf/batch.conf
 NRO_ATTEMPTS_PER_COMMIT=2
 
 LIST_OF_COMMITS_FILE="`mktemp`"
@@ -34,10 +32,6 @@ do
     echo "/// Running test on commit \"$COMMIT : $COMMIT_MESSAGE\" as requested ..."
 
     git checkout $COMMIT
-
-    export APP_NAME="$COMMIT_MESSAGE"
-    source $CONF_FILE
-    cat $SPARK_DEFAULTS_CONF_FILE.template | envsubst > $SPARK_DEFAULTS_CONF_FILE
 
     for attempt in `seq 1 $NRO_ATTEMPTS_PER_COMMIT`
     do
